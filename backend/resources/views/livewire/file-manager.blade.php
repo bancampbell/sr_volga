@@ -3,6 +3,13 @@
     <div class="bg-white border-b border-gray-200 px-4 py-2">
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-2">
+                <a href="{{ filament()->getUrl() }}"
+                   class="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 transition-colors"
+                   title="На главную админки">
+                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </a>
                 <span class="text-sm text-gray-600">Путь:</span>
                 <div class="flex items-center gap-1">
                     <button wire:click="goBack" class="text-sm text-blue-600 hover:underline">Назад</button>
@@ -39,7 +46,12 @@
                 <div class="space-y-1">
                     @foreach($files as $item)
                         @if($item['type'] === 'file')
-                            <div wire:click="showFileDetails('{{ $item['path'] }}')" class="text-sm text-gray-700 hover:bg-gray-100 px-2 py-1 rounded cursor-pointer">
+                            @php
+                                $isSelected = $selectedFile && $selectedFile['path'] === $item['path'];
+                            @endphp
+                            <div wire:click="showFileDetails('{{ $item['path'] }}')"
+                                 class="text-sm px-2 py-1 rounded cursor-pointer transition-all {{ !$isSelected ? 'text-gray-700 hover:bg-gray-100' : '' }}"
+                                 @if($isSelected) style="font-weight: 900 !important; color: #111827; background-color: #e0f2fe;" @endif>
                                 {{ $item['name'] }}
                             </div>
                         @endif
