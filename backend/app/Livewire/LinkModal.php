@@ -20,6 +20,11 @@ class LinkModal extends Component
         $this->render();
     }
 
+    public function openModalWithSelectedText()
+    {
+        $this->dispatch('get-selected-text');
+    }
+
     public function closeModal()
     {
         $this->open = false;
@@ -29,13 +34,14 @@ class LinkModal extends Component
 
     public function insertLink()
     {
-        $this->dispatch('insert-link', url: $this->linkUrl, text: $this->linkText, target: $this->linkTarget);
+        $this->dispatch('insert-link', url: $this->linkUrl, text: $this->linkText, target: $this->linkTarget, title: $this->linkTitle);
         $this->closeModal();
     }
     public function openFileManager()
     {
         $this->dispatch('open-filemanager');
     }
+
 
     public function render()
     {

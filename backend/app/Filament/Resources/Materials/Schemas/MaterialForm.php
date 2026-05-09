@@ -7,7 +7,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Schema;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class MaterialForm
@@ -31,6 +30,25 @@ class MaterialForm
                     ->unique(ignoreRecord: true),
                 RichEditor::make('content')
                     ->label('Содержимое')
+                    ->toolbarButtons([
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strike',
+                        'link',
+                        'bulletList',
+                        'orderedList',
+                        'h2',
+                        'h3',
+                        'redo',
+                        'undo',
+                        'code',
+                        'codeBlock',
+                        'blockquote',
+                        'subscript',
+                        'superscript',
+                        'attachFiles',
+                    ])
                     ->columnSpanFull(),
                 ViewField::make('link_modal')
                     ->label('')
