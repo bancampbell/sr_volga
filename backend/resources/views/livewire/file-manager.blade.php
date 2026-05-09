@@ -26,23 +26,23 @@
         </div>
     </div>
 
-    <div class="flex">
+    <div class="flex" style="min-height: calc(100vh - 60px);">
         <!-- Левая панель (дерево папок) -->
-        <div class="w-64 border-r border-gray-200">
+        <div class="w-64 border-r border-gray-200 flex flex-col">
             <div class="bg-gray-100 px-3 py-2 border-b border-gray-200">
                 <h4 class="text-xs font-semibold text-gray-600 uppercase">Папки</h4>
             </div>
-            <div class="p-2 bg-white h-96 overflow-y-auto">
+            <div class="p-2 bg-white flex-1">
                 @include('livewire.folder-tree', ['folders' => $foldersTree])
             </div>
         </div>
 
         <!-- Центральная область (только файлы) -->
-        <div class="flex-1 border-r border-gray-200">
+        <div class="flex-1 border-r border-gray-200 flex flex-col">
             <div class="bg-gray-100 px-3 py-2 border-b border-gray-200">
                 <h4 class="text-xs font-semibold text-gray-600 uppercase">Имя</h4>
             </div>
-            <div class="p-2 bg-white h-96 overflow-y-auto">
+            <div class="p-2 bg-white flex-1">
                 <div class="space-y-1">
                     @foreach($files as $item)
                         @if($item['type'] === 'file')
