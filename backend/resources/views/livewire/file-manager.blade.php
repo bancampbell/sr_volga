@@ -44,7 +44,7 @@
             <div class="bg-gray-100 px-3 py-2 border-b border-gray-200">
                 <h4 class="text-xs font-semibold text-gray-600 uppercase">Имя</h4>
             </div>
-            <div class="p-2 bg-white flex-1">
+            <div class="p-2 bg-white flex-1 overflow-y-auto">
                 <div class="space-y-1">
                     @foreach($files as $item)
                         @if($item['type'] === 'file')
@@ -52,6 +52,7 @@
                                 $isSelected = $selectedFile && $selectedFile['path'] === $item['path'];
                             @endphp
                             <div wire:click="showFileDetails('{{ $item['path'] }}')"
+                                 wire:dblclick="insertFileUrl('{{ $item['url'] }}')"
                                  class="text-sm px-2 py-1 rounded cursor-pointer transition-all {{ !$isSelected ? 'text-gray-700 hover:bg-gray-100' : '' }}"
                                  @if($isSelected) style="font-weight: 900 !important; color: #111827; background-color: #e0f2fe;" @endif>
                                 {{ $item['name'] }}
