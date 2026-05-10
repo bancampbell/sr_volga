@@ -82,6 +82,22 @@
             </div>
         </div>
     @endif
+
+    <!-- Модальное окно файлового менеджера -->
+    @if($showFileManagerModal)
+        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+        <div style="position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 0.5rem; width: 1000px; max-width: 90%; height: 80vh; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #e5e7eb;">
+                    <h3 style="font-size: 1.25rem; font-weight: 600;">Файловый менеджер</h3>
+                    <button type="button" wire:click="closeFileManagerModal" style="color: #9ca3af; font-size: 1.5rem; background: none; border: none; cursor: pointer;">&times;</button>
+                </div>
+                <div style="flex: 1; overflow: auto; padding: 1rem;">
+                    @livewire('file-manager', key(time()))
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 
 <script>
@@ -165,16 +181,6 @@
             } else {
                 console.error('Editor not found');
             }
-        });
-
-        Livewire.on('open-filemanager', () => {
-            window.open('/filemanager', 'FileManager', 'width=900,height=600');
-            window.SetUrl = (items) => {
-                let url = items[0].url;
-                if (url) {
-                @this.set('linkUrl', url);
-                }
-            };
         });
     });
 </script>

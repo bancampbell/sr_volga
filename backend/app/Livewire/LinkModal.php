@@ -12,12 +12,13 @@ class LinkModal extends Component
     public $linkTarget = '';
     public $linkTitle = '';
     public $activeTab = 'link';
+    public $showFileManagerModal = false;
 
+    protected $listeners = ['file-selected' => 'onFileSelected'];
 
     public function openModal()
     {
         $this->open = true;
-        $this->render();
     }
 
     public function openModalWithSelectedText()
@@ -28,8 +29,8 @@ class LinkModal extends Component
     public function closeModal()
     {
         $this->open = false;
-        $this->reset(['linkUrl', 'linkText', 'linkTarget']);
-        $this->render();
+        $this->showFileManagerModal = false;
+        $this->reset(['linkUrl', 'linkText', 'linkTarget', 'linkTitle']);
     }
 
     public function insertLink()
@@ -37,11 +38,22 @@ class LinkModal extends Component
         $this->dispatch('insert-link', url: $this->linkUrl, text: $this->linkText, target: $this->linkTarget, title: $this->linkTitle);
         $this->closeModal();
     }
+
     public function openFileManager()
     {
-        $this->dispatch('open-filemanager');
+        $this->showFileManagerModal = true;
     }
 
+    public function closeFileManagerModal()
+    {
+        $this->showFileManagerModal = false;
+    }
+
+    public function onFileSelected($url)
+    {
+        $this->linkUrl = $url;
+        $this->closeFileManagerModal();
+    }
 
     public function render()
     {

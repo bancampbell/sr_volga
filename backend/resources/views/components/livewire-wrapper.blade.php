@@ -1,1 +1,3 @@
-<livewire:link-modal />
+<div wire:ignore>
+    <livewire:link-modal />
+</div>

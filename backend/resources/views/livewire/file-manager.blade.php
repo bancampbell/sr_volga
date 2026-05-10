@@ -1,4 +1,4 @@
-<div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
+<div x-data="{}" class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
     <!-- Верхняя панель -->
     <div class="bg-white border-b border-gray-200 px-4 py-2">
         <div class="flex justify-between items-center">
@@ -19,7 +19,9 @@
             </div>
             <div class="flex gap-2">
                 <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Показать Все</button>
-                <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Новая папка</button>
+                <button wire:click="openNewFolderModal" class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">
+                    Новая папка
+                </button>
                 <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Загрузить</button>
                 <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Справка</button>
             </div>
@@ -102,4 +104,33 @@
             @endif
         </div>
     </div>
+
+    <!-- Модальное окно "Новая папка" -->
+    @if($showNewFolderModal)
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" wire:click.self="closeNewFolderModal">
+            <div class="bg-white rounded-lg shadow-xl w-96 p-6">
+                <h3 class="text-lg font-semibold mb-4">Создать новую папку</h3>
+                <p class="text-sm text-gray-500 mb-3">
+                    Текущая папка: <span class="font-mono">{{ $currentPath ?: '/' }}</span>
+                </p>
+                <input type="text"
+                       wire:model="newFolderName"
+                       wire:keydown.enter="createFolder"
+                       placeholder="Название папки"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
+                @error('newFolderName')
+                <div class="text-red-500 text-sm mb-3">{{ $message }}</div>
+                @enderror
+                <div class="flex justify-end gap-2">
+                    <button wire:click="closeNewFolderModal" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">
+                        Отмена
+                    </button>
+                    <button wire:click="createFolder" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                        Создать
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
 </div>
