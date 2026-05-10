@@ -1,6 +1,6 @@
-<div x-data="{}" class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
+<div x-data="{}" class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
     <!-- Верхняя панель -->
-    <div class="bg-white border-b border-gray-200 px-4 py-2">
+    <div class="bg-white px-4 py-2">
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <a href="{{ filament()->getUrl() }}"
@@ -19,32 +19,49 @@
             </div>
             <div class="flex gap-2">
                 <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Показать Все</button>
-                <button wire:click="openNewFolderModal" class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">
-                    Новая папка
-                </button>
                 <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Загрузить</button>
                 <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Справка</button>
             </div>
         </div>
     </div>
 
-    <div class="flex" style="min-height: calc(100vh - 60px);">
-        <!-- Левая панель (дерево папок) -->
-        <div class="w-64 border-r border-gray-200 flex flex-col">
-            <div class="bg-gray-100 px-3 py-2 border-b border-gray-200">
+    <div class="flex">
+        <!-- Левая панель -->
+        <!-- Левая панель -->
+        <div class="w-64 border-r border-gray-200">
+            <div class="bg-gray-100 px-3 py-2">
                 <h4 class="text-xs font-semibold text-gray-600 uppercase">Папки</h4>
             </div>
-            <div class="p-2 bg-white flex-1">
+
+            <!-- Поле для новой папки -->
+            <div class="p-2 border-b border-gray-200">
+                <div class="flex gap-1">
+                    <input type="text"
+                           wire:model="newFolderName"
+                           wire:keydown.enter="createFolderInline"
+                           placeholder="Новая папка..."
+                           class="flex-1 text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    <button wire:click="createFolderInline"
+                            class="px-2 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                        +
+                    </button>
+                </div>
+                @error('newFolderName')
+                <div class="text-red-500 text-xs mt-1">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="p-2 bg-white">
                 @include('livewire.folder-tree', ['folders' => $foldersTree])
             </div>
         </div>
 
-        <!-- Центральная область (только файлы) -->
-        <div class="flex-1 border-r border-gray-200 flex flex-col">
-            <div class="bg-gray-100 px-3 py-2 border-b border-gray-200">
+        <!-- Центральная область -->
+        <div class="flex-1 border-r border-gray-200">
+            <div class="bg-gray-100 px-3 py-2">
                 <h4 class="text-xs font-semibold text-gray-600 uppercase">Имя</h4>
             </div>
-            <div class="p-2 bg-white flex-1 overflow-y-auto">
+            <div class="p-2 bg-white">
                 <div class="space-y-1">
                     @foreach($files as $item)
                         @if($item['type'] === 'file')
@@ -67,11 +84,11 @@
         </div>
 
         <!-- Правая панель -->
-        <div class="w-64 flex flex-col">
-            <div class="bg-gray-100 px-3 py-2 border-b border-gray-200">
+        <div class="w-64">
+            <div class="bg-gray-100 px-3 py-2">
                 <h4 class="text-xs font-semibold text-gray-600 uppercase">Подробная информация</h4>
             </div>
-            <div class="p-3 bg-white flex-1">
+            <div class="p-3 bg-white">
                 @if($selectedFile)
                     <div class="text-center">
                         <div class="font-medium text-sm break-all">{{ $selectedFile['name'] }}</div>
@@ -106,32 +123,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно "Новая папка" -->
-    @if($showNewFolderModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" wire:click.self="closeNewFolderModal">
-            <div class="bg-white rounded-lg shadow-xl w-96 p-6">
-                <h3 class="text-lg font-semibold mb-4">Создать новую папку</h3>
-                <p class="text-sm text-gray-500 mb-3">
-                    Текущая папка: <span class="font-mono">{{ $currentPath ?: '/' }}</span>
-                </p>
-                <input type="text"
-                       wire:model="newFolderName"
-                       wire:keydown.enter="createFolder"
-                       placeholder="Название папки"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4">
-                @error('newFolderName')
-                <div class="text-red-500 text-sm mb-3">{{ $message }}</div>
-                @enderror
-                <div class="flex justify-end gap-2">
-                    <button wire:click="closeNewFolderModal" class="px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">
-                        Отмена
-                    </button>
-                    <button wire:click="createFolder" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-                        Создать
-                    </button>
-                </div>
-            </div>
-        </div>
-    @endif
+
 
 </div>

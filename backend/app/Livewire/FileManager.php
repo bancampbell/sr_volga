@@ -201,8 +201,39 @@ class FileManager extends Component
         }
     }
 
+
+    public function createFolderInline()
+    {
+        $this->validate([
+            'newFolderName' => 'required|string|max:255|regex:/^[a-zA-Zа-яА-Я0-9_\-\s]+$/u',
+        ], [
+            'newFolderName.required' => 'Введите название папки',
+            'newFolderName.regex' => 'Название может содержать буквы, цифры, пробелы, дефис и нижнее подчёркивание',
+        ]);
+
+        $disk = Storage::disk('public');
+        $path = $this->currentPath
+            ? $this->currentPath . '/' . $this->newFolderName
+            : $this->newFolderName;
+
+        if (!$disk->exists($path)) {
+            $disk->makeDirectory($path);
+            $this->loadFiles();
+            $this->loadFoldersTree();
+            $this->newFolderName = '';
+            $this->resetErrorBag();
+        } else {
+            $this->addError('newFolderName', 'Папка с таким именем уже существует');
+        }
+    }
+
+
+
     public function render()
     {
         return view('livewire.file-manager');
     }
+
+
+
 }
