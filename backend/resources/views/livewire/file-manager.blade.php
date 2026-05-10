@@ -1,3 +1,21 @@
+@push('styles')
+    <style>
+        .upload-dropzone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .upload-dropzone.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+@endpush
+
+
 <div x-data="{}" class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
     <!-- Верхняя панель -->
     <div class="bg-white px-4 py-2">
@@ -18,15 +36,15 @@
                 </div>
             </div>
             <div class="flex gap-2">
-                <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Показать Все</button>
-                <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Загрузить</button>
+                <button wire:click="openUploadModal" class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">
+                    Загрузить
+                </button>
                 <button class="px-3 py-1 text-sm bg-gray-100 border border-gray-300 rounded hover:bg-gray-200">Справка</button>
             </div>
         </div>
     </div>
 
     <div class="flex">
-        <!-- Левая панель -->
         <!-- Левая панель -->
         <div class="w-64 border-r border-gray-200">
             <div class="bg-gray-100 px-3 py-2">
@@ -123,6 +141,80 @@
         </div>
     </div>
 
+    <!-- Модальное окно загрузки файлов -->
+    @if($showUploadModal)
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" wire:click.self="closeUploadModal">
+            <div style="width: 900px; height: 600px; background: white; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+                <!-- Шапка -->
+                <div style="height: 40px; background: #9ca3af; border-radius: 8px 8px 0 0; display: flex; align-items: center; padding: 0 16px;">
+                    <span style="font-weight: 700; color: #374151; font-size: 14px;">Загрузить</span>
+                </div>
 
+                <!-- Центральный блок (область перетаскивания) -->
+                <div style="margin: 30px; flex: 1; background: #f3f4f6; border: 2px dashed #d1d5db; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+                     x-data
+                     x-on:dragover.prevent="$el.classList.add('border-blue-500', 'bg-blue-50')"
+                     x-on:dragleave.prevent="$el.classList.remove('border-blue-500', 'bg-blue-50')"
+                     x-on:drop.prevent="
+                         $el.classList.remove('border-blue-500', 'bg-blue-50');
+                         let files = Array.from($event.dataTransfer.files);
+                         $wire.uploadMultiple('uploadedFiles', files);
+                     "
+                     x-on:click="$refs.fileInput.click()">
+
+                    <input type="file"
+                           x-ref="fileInput"
+                           multiple
+                           wire:model="uploadedFiles"
+                           class="hidden">
+
+                    <span style="font-weight: 700; color: #4b5563; font-size: 16px;">Перетащите файлы сюда</span>
+                </div>
+
+                <!-- Список выбранных файлов -->
+                @if($uploadedFiles && count($uploadedFiles) > 0)
+                    <div style="margin: 0 30px 20px 30px; padding: 10px; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 4px; max-height: 100px; overflow-y: auto;">
+                        <div style="font-size: 12px; color: #4b5563; font-weight: 500; margin-bottom: 8px;">Выбрано файлов: {{ count($uploadedFiles) }}</div>
+                        @foreach($uploadedFiles as $file)
+                            <div style="font-size: 11px; color: #6b7280; padding: 2px 0;">
+                                📄 {{ $file->getClientOriginalName() }}
+                                ({{ $this->formatSize($file->getSize()) }})
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <!-- Футер с кнопками -->
+                <div style="height: 60px; background: #f3f4f6; border-radius: 0 0 8px 8px; display: flex; justify-content: flex-end; align-items: center; gap: 12px; padding: 0 20px;">
+                    <!-- Кнопка Обзор -->
+                    <button type="button"
+                            x-on:click="$refs.fileInput2.click()"
+                            style="background: #10b981; color: white; border: none; padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;">
+                        Обзор
+                    </button>
+                    <input type="file"
+                           x-ref="fileInput2"
+                           multiple
+                           wire:model="uploadedFiles"
+                           class="hidden">
+
+                    <!-- Кнопка Загрузить -->
+                    <button wire:click="uploadFiles"
+                            wire:loading.attr="disabled"
+                            style="background: #3b82f6; color: white; border: none; padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;">
+                        Загрузить
+                    </button>
+
+                    <!-- Кнопка Закрыть -->
+                    <button wire:click="closeUploadModal"
+                            style="background: white; color: #374151; border: 1px solid #d1d5db; padding: 8px 20px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;">
+                        Закрыть
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+    @endif
 
 </div>

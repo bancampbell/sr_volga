@@ -3,16 +3,23 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 
 class FileManager extends Component
 {
+    use WithFileUploads;
+
     public $currentPath = '';
     public $files = [];
     public $foldersTree = [];
     public $selectedFile = null;
     public $showNewFolderModal = false;
     public $newFolderName = '';
+
+    public $showUploadModal = false;
+    public $uploadedFiles = [];
+
 
     public function mount()
     {
@@ -229,11 +236,50 @@ class FileManager extends Component
 
 
 
-    public function render()
+    public function openUploadModal()
     {
-        return view('livewire.file-manager');
+        $this->showUploadModal = true;
+    }
+
+    public function closeUploadModal()
+    {
+        $this->showUploadModal = false;
+        $this->reset(['uploadedFiles']);
+    }
+
+    public function uploadFiles()
+    {
+        $this->validate([
+            'uploadedFiles.*' => 'required|file|max:102400', // макс 100MB
+        ]);
+
+        $disk = Storage::disk('public');
+        $path = $this->currentPath ?: '';
+
+        foreach ($this->uploadedFiles as $file) {
+            $originalName = $file->getClientOriginalName();
+            $destination = $path . '/' . $originalName;
+
+            // Если файл с таким именем существует — добавляем суффикс
+            $counter = 1;
+            $name = pathinfo($originalName, PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
+            while ($disk->exists($destination)) {
+                $destination = $path . '/' . $name . '_' . $counter . '.' . $extension;
+                $counter++;
+            }
+
+            $disk->putFileAs($path, $file, basename($destination));
+        }
+
+        $this->loadFiles();
+        $this->closeUploadModal();
     }
 
 
 
+    public function render()
+    {
+        return view('livewire.file-manager');
+    }
 }
