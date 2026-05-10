@@ -143,7 +143,7 @@
 
     <!-- Модальное окно загрузки файлов -->
     @if($showUploadModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" wire:click.self="closeUploadModal">
+        <div style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; z-index: 50;" wire:click.self="closeUploadModal">
             <div style="width: 900px; height: 600px; background: white; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
                 <!-- Шапка -->
                 <div style="height: 40px; background: #9ca3af; border-radius: 8px 8px 0 0; display: flex; align-items: center; padding: 0 16px;">
@@ -211,8 +211,6 @@
                         Закрыть
                     </button>
                 </div>
-
-
             </div>
         </div>
     @endif
