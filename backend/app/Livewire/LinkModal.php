@@ -14,7 +14,50 @@ class LinkModal extends Component
     public $activeTab = 'link';
     public $showFileManagerModal = false;
 
+    public $materials = [];
+    public $searchTerm = '';
+
     protected $listeners = ['file-selected' => 'onFileSelected'];
+
+    public $selectedMaterialId = null;
+
+    public function mount()
+    {
+        $this->loadMaterials();
+    }
+
+    public function loadMaterials()
+    {
+        $query = \App\Models\Material::query();
+
+        if (!empty($this->searchTerm)) {
+            $query->where('title', 'like', '%' . $this->searchTerm . '%');
+        }
+
+        $this->materials = $query->orderBy('title')->get(); // или ->paginate(100)
+    }
+
+    public function updatedSearchTerm()
+    {
+        $this->loadMaterials();
+    }
+
+    public function selectMaterial($slug)
+    {
+        $material = \App\Models\Material::where('slug', $slug)->first();
+        if ($material) {
+            // Если выбран тот же материал — снимаем выделение
+            if ($this->selectedMaterialId === $material->id) {
+                $this->selectedMaterialId = null;
+                $this->linkUrl = '';
+                $this->linkText = '';
+            } else {
+                $this->selectedMaterialId = $material->id;
+                $this->linkUrl = url('/materials/' . $material->slug);
+                $this->linkText = $this->linkText ?: $material->title;
+            }
+        }
+    }
 
     public function openModal()
     {
@@ -30,7 +73,8 @@ class LinkModal extends Component
     {
         $this->open = false;
         $this->showFileManagerModal = false;
-        $this->reset(['linkUrl', 'linkText', 'linkTarget', 'linkTitle']);
+        $this->reset(['linkUrl', 'linkText', 'linkTarget', 'linkTitle', 'searchTerm']);
+        $this->loadMaterials();
     }
 
     public function insertLink()
@@ -42,7 +86,6 @@ class LinkModal extends Component
     public function openFileManager()
     {
         $this->showFileManagerModal = true;
-        // Передаём текущий URL файловому менеджеру
         if ($this->linkUrl) {
             $this->dispatch('set-file-manager-path', path: $this->linkUrl);
         }
@@ -56,6 +99,7 @@ class LinkModal extends Component
     public function onFileSelected($url)
     {
         $this->linkUrl = $url;
+        $this->selectedMaterialId = null; // Сбрасываем выделение материала
         $this->closeFileManagerModal();
     }
 

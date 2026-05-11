@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ }">
     <button type="button" wire:click="openModalWithSelectedText" class="px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
         🔗 Добавить ссылку
     </button>
@@ -35,18 +35,53 @@
                                 <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Текст ссылки</label>
                                 <input type="text" wire:model="linkText" style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
                             </div>
+
+                            <!-- Поиск и список материалов -->
                             <div style="margin-bottom: 1.25rem;">
-                                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Поиск</label>
                                 <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                    <input type="text" placeholder="Поиск..." style="flex: 1; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
-                                    <button type="button" style="padding: 0.5rem 1rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer;">Поиск</button>
+                                    <input type="text"
+                                           wire:model.live="searchTerm"
+                                           placeholder="Поиск..."
+                                           style="flex: 1; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                                    <button type="button"
+                                            wire:click="loadMaterials"
+                                            style="padding: 0.5rem 1rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer;">
+                                        🔍 Поиск
+                                    </button>
                                 </div>
-                                <div style="border: 1px solid #e5e7eb; border-radius: 0.375rem; overflow: hidden;">
-                                    <div style="padding: 0.5rem; cursor: pointer; background: #f9fafb; border-bottom: 1px solid #e5e7eb;">Контакты</div>
-                                    <div style="padding: 0.5rem; cursor: pointer; background: #f9fafb; border-bottom: 1px solid #e5e7eb;">Контент</div>
-                                    <div style="padding: 0.5rem; cursor: pointer; background: #f9fafb;">Меню</div>
+
+                                <div style="height: 200px; border: 1px solid #e5e7eb; border-radius: 0.375rem; overflow: hidden;">
+                                    <div x-data="{ showMaterials: true }" style="height: 100%; display: flex; flex-direction: column;">
+                                        <!-- Контент с плюсом/минусом -->
+                                        <div @click="showMaterials = !showMaterials"
+                                             style="padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; flex-shrink: 0; background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+                                            <span x-text="showMaterials ? '−' : '+'" style="font-size: 1rem; font-weight: bold; color: #374151;"></span>
+                                            <span>Контент ({{ count($materials) }})</span>
+                                        </div>
+
+                                        <!-- Список материалов -->
+                                        <div x-show="showMaterials" style="flex: 1; overflow-y: auto;">
+                                            @forelse($materials as $index => $material)
+                                                @php
+                                                    $isSelected = ($selectedMaterialId ?? null) === $material->id;
+                                                @endphp
+                                                <div wire:click="selectMaterial('{{ $material->slug }}')"
+                                                     wire:key="{{ $material->id }}"
+                                                     style="padding: 0.5rem 0.75rem 0.5rem 2rem; cursor: pointer; transition: all 0.2s; {{ $isSelected ? 'font-weight: 900; background-color: #e0f2fe;' : '' }}"
+                                                     onmouseover="this.style.backgroundColor='#f3f4f6'"
+                                                     onmouseout="this.style.backgroundColor='{{ $isSelected ? '#e0f2fe' : 'transparent' }}'">
+                                                    {{ $material->title }}
+                                                </div>
+                                            @empty
+                                                <div style="padding: 0.5rem 0.75rem 0.5rem 2rem; color: #9ca3af;">
+                                                    Материалы не найдены
+                                                </div>
+                                            @endforelse
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
                             <div style="margin-bottom: 1.25rem;">
                                 <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Якоря статьи</label>
                                 <select style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">

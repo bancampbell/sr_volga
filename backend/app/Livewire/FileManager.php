@@ -227,23 +227,38 @@ class FileManager extends Component
         $disk = Storage::disk('public');
         $path = $this->currentPath ?: '';
 
+        $lastUploadedFile = null;
+
         foreach ($this->uploadedFiles as $file) {
             $originalName = $file->getClientOriginalName();
-            $destination = $path . '/' . $originalName;
+            $destination = $path ? $path . '/' . $originalName : $originalName;
 
             $counter = 1;
             $name = pathinfo($originalName, PATHINFO_FILENAME);
             $extension = $file->getClientOriginalExtension();
             while ($disk->exists($destination)) {
-                $destination = $path . '/' . $name . '_' . $counter . '.' . $extension;
+                $newName = $name . '_' . $counter . '.' . $extension;
+                $destination = $path ? $path . '/' . $newName : $newName;
                 $counter++;
             }
 
             $disk->putFileAs($path, $file, basename($destination));
+            $lastUploadedFile = $destination;
         }
 
         $this->loadFiles();
         $this->closeUploadModal();
+
+        // Выделяем последний загруженный файл
+        if ($lastUploadedFile && $disk->exists($lastUploadedFile)) {
+            $this->selectedFile = [
+                'name' => basename($lastUploadedFile),
+                'path' => $lastUploadedFile,
+                'url' => Storage::url($lastUploadedFile),
+                'size' => $this->formatSize($disk->size($lastUploadedFile)),
+                'lastModified' => date('d/m/Y, H:i', $disk->lastModified($lastUploadedFile)),
+            ];
+        }
     }
 
     public function navigateToFile($path)
