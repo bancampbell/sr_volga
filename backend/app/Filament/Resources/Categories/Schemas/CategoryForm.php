@@ -24,7 +24,19 @@ class CategoryForm
                     ->unique(ignoreRecord: true),
                 Select::make('parent_id')
                     ->label('Родительская категория')
-                    ->relationship('parent', 'name')
+                    ->options(function ($livewire) {
+                        $query = \App\Models\Category::query();
+
+                        // При редактировании исключаем текущую категорию и её потомков
+                        if ($livewire->record) {
+                            $categoryIds = [$livewire->record->id];
+                            $childrenIds = $livewire->record->children->pluck('id')->toArray();
+                            $excludeIds = array_merge($categoryIds, $childrenIds);
+                            $query->whereNotIn('id', $excludeIds);
+                        }
+
+                        return $query->pluck('name', 'id');
+                    })
                     ->searchable()
                     ->preload()
                     ->placeholder('-- Без родителя --'),

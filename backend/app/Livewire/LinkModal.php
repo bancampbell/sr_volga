@@ -34,7 +34,7 @@ class LinkModal extends Component
 
     public function loadCategories()
     {
-        $this->categories = \App\Models\Category::with('children')->whereNull('parent_id')->get();
+        $this->categories = \App\Models\Category::with('materials')->get();
     }
 
     public function loadMaterials()

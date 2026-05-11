@@ -9,10 +9,6 @@
 
     @if(in_array($category->id, $expandedCategories))
         <div style="margin-left: 1.5rem;">
-            @foreach($category->children as $child)
-                @include('livewire.category-tree', ['category' => $child, 'selectedMaterialId' => $selectedMaterialId])
-            @endforeach
-
             @foreach($category->materials as $material)
                 <div wire:click="selectMaterial('{{ $material->slug }}')"
                      style="padding: 0.5rem 0.75rem 0.5rem 1rem; cursor: pointer; {{ ($selectedMaterialId ?? null) === $material->id ? 'font-weight: 900; background-color: #e0f2fe;' : '' }}"
