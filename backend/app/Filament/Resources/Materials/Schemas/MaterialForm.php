@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Materials\Schemas;
 
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ViewField;
@@ -28,6 +29,12 @@ class MaterialForm
                     ->label('URL')
                     ->required()
                     ->unique(ignoreRecord: true),
+                Select::make('category_id')
+                    ->label('Категория')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('-- Выберите категорию --'),
                 RichEditor::make('content')
                     ->label('Содержимое')
                     ->toolbarButtons([
