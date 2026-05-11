@@ -42,6 +42,10 @@ class LinkModal extends Component
     public function openFileManager()
     {
         $this->showFileManagerModal = true;
+        // Передаём текущий URL файловому менеджеру
+        if ($this->linkUrl) {
+            $this->dispatch('set-file-manager-path', path: $this->linkUrl);
+        }
     }
 
     public function closeFileManagerModal()

@@ -12,6 +12,31 @@
             border-color: #3b82f6;
             background-color: #eff6ff;
         }
+
+        /* Чёрно-белый чекбокс */
+        .checkbox-bw {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1px solid #4b5563;
+            background: white;
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+        }
+        .checkbox-bw:checked {
+            background: white;
+            position: relative;
+        }
+        .checkbox-bw:checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            font-size: 14px;
+            color: #1f2937;
+            font-weight: bold;
+        }
     </style>
 @endpush
 
@@ -86,11 +111,19 @@
                             @php
                                 $isSelected = $selectedFile && $selectedFile['path'] === $item['path'];
                             @endphp
-                            <div wire:click="showFileDetails('{{ $item['path'] }}')"
-                                 wire:dblclick="insertFileUrl('{{ $item['url'] }}')"
-                                 class="text-sm px-2 py-1 rounded cursor-pointer transition-all {{ !$isSelected ? 'text-gray-700 hover:bg-gray-100' : '' }}"
+                            <div class="flex items-center gap-2 text-sm px-2 py-1 rounded cursor-pointer transition-all {{ !$isSelected ? 'text-gray-700 hover:bg-gray-100' : '' }}"
                                  @if($isSelected) style="font-weight: 900 !important; color: #111827; background-color: #e0f2fe;" @endif>
-                                {{ $item['name'] }}
+                                <!-- Чёрно-белый чекбокс только для отображения состояния -->
+                                <div class="w-4 h-4 border border-gray-600 bg-white flex items-center justify-center">
+                                    @if($isSelected)
+                                        <span class="text-gray-900 text-sm leading-none" style="font-size: 14px;">✓</span>
+                                    @endif
+                                </div>
+                                <span wire:click="toggleFileSelection('{{ $item['path'] }}')"
+                                      wire:dblclick="insertFileUrl('{{ $item['url'] }}')"
+                                      class="flex-1">
+                                    {{ $item['name'] }}
+                                </span>
                             </div>
                         @endif
                     @endforeach

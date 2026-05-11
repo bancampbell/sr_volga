@@ -93,7 +93,7 @@
                     <button type="button" wire:click="closeFileManagerModal" style="color: #9ca3af; font-size: 1.5rem; background: none; border: none; cursor: pointer;">&times;</button>
                 </div>
                 <div style="flex: 1; overflow: auto; padding: 1rem;">
-                    @livewire('file-manager', key(time()))
+                    @livewire('file-manager', ['key' => time()])
                 </div>
             </div>
         </div>

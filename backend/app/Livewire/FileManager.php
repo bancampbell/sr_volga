@@ -20,6 +20,8 @@ class FileManager extends Component
     public $showUploadModal = false;
     public $uploadedFiles = [];
 
+    protected $listeners = ['set-file-manager-path' => 'navigateToFile'];
+
 
     public function mount()
     {
@@ -55,15 +57,12 @@ class FileManager extends Component
         $disk = Storage::disk('public');
         $path = $this->currentPath;
 
-        // Получаем ВСЕ папки
         $allFolders = $disk->directories($path);
 
-        // Преобразуем в массив с понятным ключом
         $foldersList = [];
         foreach ($allFolders as $folder) {
             $name = basename($folder);
 
-            // Вычисляем числовой ключ, если имя состоит из цифр
             $sortNumber = null;
             if (preg_match('/^\d+$/', $name)) {
                 $sortNumber = (int)$name;
@@ -78,28 +77,19 @@ class FileManager extends Component
             ];
         }
 
-        // Жесткая сортировка
         usort($foldersList, function($a, $b) {
-            // Если оба — числа
             if ($a['sort_number'] !== null && $b['sort_number'] !== null) {
                 return $a['sort_number'] <=> $b['sort_number'];
             }
-
-            // Если только a — число
             if ($a['sort_number'] !== null) {
                 return -1;
             }
-
-            // Если только b — число
             if ($b['sort_number'] !== null) {
                 return 1;
             }
-
-            // Иначе — по алфавиту
             return strcmp($a['original_name'], $b['original_name']);
         });
 
-        // Сортируем файлы по имени
         $allFiles = $disk->files($path);
         $filesList = [];
         foreach ($allFiles as $file) {
@@ -117,10 +107,6 @@ class FileManager extends Component
             return strcmp($a['name'], $b['name']);
         });
 
-        \Log::info('Sorted folders:', array_column($foldersList, 'name'));
-
-
-        // Объединяем папки и файлы
         $this->files = array_merge($foldersList, $filesList);
     }
 
@@ -138,18 +124,6 @@ class FileManager extends Component
         if ($this->currentPath === '.') $this->currentPath = '';
         $this->loadFiles();
         $this->selectedFile = null;
-    }
-
-    public function showFileDetails($path)
-    {
-        $disk = Storage::disk('public');
-        $this->selectedFile = [
-            'name' => basename($path),
-            'path' => $path,
-            'url' => Storage::url($path),
-            'size' => $this->formatSize($disk->size($path)),
-            'lastModified' => date('d/m/Y, H:i', $disk->lastModified($path)),
-        ];
     }
 
     public function closeFileInfo()
@@ -208,7 +182,6 @@ class FileManager extends Component
         }
     }
 
-
     public function createFolderInline()
     {
         $this->validate([
@@ -234,8 +207,6 @@ class FileManager extends Component
         }
     }
 
-
-
     public function openUploadModal()
     {
         $this->showUploadModal = true;
@@ -250,7 +221,7 @@ class FileManager extends Component
     public function uploadFiles()
     {
         $this->validate([
-            'uploadedFiles.*' => 'required|file|max:102400', // макс 100MB
+            'uploadedFiles.*' => 'required|file|max:102400',
         ]);
 
         $disk = Storage::disk('public');
@@ -260,7 +231,6 @@ class FileManager extends Component
             $originalName = $file->getClientOriginalName();
             $destination = $path . '/' . $originalName;
 
-            // Если файл с таким именем существует — добавляем суффикс
             $counter = 1;
             $name = pathinfo($originalName, PATHINFO_FILENAME);
             $extension = $file->getClientOriginalExtension();
@@ -276,7 +246,58 @@ class FileManager extends Component
         $this->closeUploadModal();
     }
 
+    public function navigateToFile($path)
+    {
+        if (empty($path)) return;
 
+        $relativePath = str_replace('/storage/', '', $path);
+
+        $directory = dirname($relativePath);
+        $filename = basename($relativePath);
+
+        if ($directory !== '.' && $directory !== '/') {
+            $this->currentPath = $directory;
+            $this->loadFiles();
+        } else {
+            $this->currentPath = '';
+            $this->loadFiles();
+        }
+
+        $disk = Storage::disk('public');
+        $fullPath = ($this->currentPath ? $this->currentPath . '/' : '') . $filename;
+
+        if ($disk->exists($fullPath)) {
+            $this->selectedFile = [
+                'name' => $filename,
+                'path' => $fullPath,
+                'url' => Storage::url($fullPath),
+                'size' => $this->formatSize($disk->size($fullPath)),
+                'lastModified' => date('d/m/Y, H:i', $disk->lastModified($fullPath)),
+            ];
+        }
+    }
+
+    public function toggleFileSelection($path)
+    {
+        $this->setSelectedFile($path);
+    }
+
+    private function setSelectedFile($path)
+    {
+        $disk = Storage::disk('public');
+
+        if ($this->selectedFile && $this->selectedFile['path'] === $path) {
+            $this->selectedFile = null;
+        } else {
+            $this->selectedFile = [
+                'name' => basename($path),
+                'path' => $path,
+                'url' => Storage::url($path),
+                'size' => $this->formatSize($disk->size($path)),
+                'lastModified' => date('d/m/Y, H:i', $disk->lastModified($path)),
+            ];
+        }
+    }
 
     public function render()
     {
