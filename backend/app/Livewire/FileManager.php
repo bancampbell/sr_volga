@@ -265,6 +265,11 @@ class FileManager extends Component
     {
         if (empty($path)) return;
 
+        // Проверяем, что путь ведёт к файлу в storage
+        if (!str_contains($path, '/storage/')) {
+            return; // Игнорируем, если это не файл (например, ссылка на материал)
+        }
+
         $relativePath = str_replace('/storage/', '', $path);
 
         $directory = dirname($relativePath);
