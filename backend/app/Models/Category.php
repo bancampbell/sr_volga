@@ -10,6 +10,8 @@ class Category extends Model
 {
     protected $fillable = ['name', 'slug', 'parent_id'];
 
+    protected $with = ['materials', 'children'];
+
     public function materials(): HasMany
     {
         return $this->hasMany(Material::class);

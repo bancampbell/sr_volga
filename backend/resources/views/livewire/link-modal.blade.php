@@ -36,7 +36,7 @@
                                 <input type="text" wire:model="linkText" style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
                             </div>
 
-                            <!-- Поиск и список материалов -->
+                            <!-- Поиск и дерево категорий/материалов -->
                             <div style="margin-bottom: 1.25rem;">
                                 <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
                                     <input type="text"
@@ -50,35 +50,25 @@
                                     </button>
                                 </div>
 
-                                <div style="height: 200px; border: 1px solid #e5e7eb; border-radius: 0.375rem; overflow: hidden;">
-                                    <div x-data="{ showMaterials: true }" style="height: 100%; display: flex; flex-direction: column;">
-                                        <!-- Контент с плюсом/минусом -->
-                                        <div @click="showMaterials = !showMaterials"
-                                             style="padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; flex-shrink: 0; background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
-                                            <span x-text="showMaterials ? '−' : '+'" style="font-size: 1rem; font-weight: bold; color: #374151;"></span>
-                                            <span>Контент ({{ count($materials) }})</span>
-                                        </div>
-
-                                        <!-- Список материалов -->
-                                        <div x-show="showMaterials" style="flex: 1; overflow-y: auto;">
-                                            @forelse($materials as $index => $material)
-                                                @php
-                                                    $isSelected = ($selectedMaterialId ?? null) === $material->id;
-                                                @endphp
-                                                <div wire:click="selectMaterial('{{ $material->slug }}')"
-                                                     wire:key="{{ $material->id }}"
-                                                     style="padding: 0.5rem 0.75rem 0.5rem 2rem; cursor: pointer; transition: all 0.2s; {{ $isSelected ? 'font-weight: 900; background-color: #e0f2fe;' : '' }}"
-                                                     onmouseover="this.style.backgroundColor='#f3f4f6'"
-                                                     onmouseout="this.style.backgroundColor='{{ $isSelected ? '#e0f2fe' : 'transparent' }}'">
-                                                    {{ $material->title }}
-                                                </div>
-                                            @empty
-                                                <div style="padding: 0.5rem 0.75rem 0.5rem 2rem; color: #9ca3af;">
-                                                    Материалы не найдены
-                                                </div>
-                                            @endforelse
-                                        </div>
-                                    </div>
+                                <div style="height: 200px; border: 1px solid #e5e7eb; border-radius: 0.375rem; overflow-y: auto;">
+                                    @if($searchTerm)
+                                        <!-- Режим поиска: показываем найденные материалы -->
+                                        @forelse($materials as $material)
+                                            <div wire:click="selectMaterial('{{ $material->slug }}')"
+                                                 style="padding: 0.5rem 0.75rem; cursor: pointer; {{ ($selectedMaterialId ?? null) === $material->id ? 'font-weight: 900; background-color: #e0f2fe;' : '' }}">
+                                                {{ $material->title }}
+                                            </div>
+                                        @empty
+                                            <div style="padding: 0.5rem 0.75rem; color: #9ca3af;">
+                                                Материалы не найдены
+                                            </div>
+                                        @endforelse
+                                    @else
+                                        <!-- Дерево категорий -->
+                                        @foreach($categories as $category)
+                                            @include('livewire.category-tree', ['category' => $category, 'selectedMaterialId' => $selectedMaterialId])
+                                        @endforeach
+                                    @endif
                                 </div>
                             </div>
 

@@ -16,6 +16,8 @@ class LinkModal extends Component
 
     public $materials = [];
     public $searchTerm = '';
+    public $categories = [];
+    public $expandedCategories = []; // массив раскрытых категорий
 
     protected $listeners = ['file-selected' => 'onFileSelected'];
 
@@ -23,7 +25,16 @@ class LinkModal extends Component
 
     public function mount()
     {
+        $this->loadCategories();
         $this->loadMaterials();
+        if ($this->linkUrl) {
+            $this->findAndSelectMaterialByUrl($this->linkUrl);
+        }
+    }
+
+    public function loadCategories()
+    {
+        $this->categories = \App\Models\Category::with('children')->whereNull('parent_id')->get();
     }
 
     public function loadMaterials()
@@ -34,19 +45,22 @@ class LinkModal extends Component
             $query->where('title', 'like', '%' . $this->searchTerm . '%');
         }
 
-        $this->materials = $query->orderBy('title')->get(); // или ->paginate(100)
+        $this->materials = $query->limit(50)->get();
     }
 
-    public function updatedSearchTerm()
+    public function toggleCategory($categoryId)
     {
-        $this->loadMaterials();
+        if (in_array($categoryId, $this->expandedCategories)) {
+            $this->expandedCategories = array_diff($this->expandedCategories, [$categoryId]);
+        } else {
+            $this->expandedCategories[] = $categoryId;
+        }
     }
 
     public function selectMaterial($slug)
     {
         $material = \App\Models\Material::where('slug', $slug)->first();
         if ($material) {
-            // Если выбран тот же материал — снимаем выделение
             if ($this->selectedMaterialId === $material->id) {
                 $this->selectedMaterialId = null;
                 $this->linkUrl = '';
@@ -55,13 +69,61 @@ class LinkModal extends Component
                 $this->selectedMaterialId = $material->id;
                 $this->linkUrl = url('/materials/' . $material->slug);
                 $this->linkText = $this->linkText ?: $material->title;
+
+                // Раскрываем категорию при выборе материала
+                if ($material->category_id && !in_array($material->category_id, $this->expandedCategories)) {
+                    $this->expandedCategories[] = $material->category_id;
+                    $category = $material->category;
+                    while ($category && $category->parent_id) {
+                        $category = $category->parent;
+                        if ($category && !in_array($category->id, $this->expandedCategories)) {
+                            $this->expandedCategories[] = $category->id;
+                        }
+                    }
+                }
             }
         }
+    }
+
+    public function updatedSearchTerm()
+    {
+        $this->loadMaterials();
+        $this->loadCategories(); // обновляем категории (для счётчиков)
     }
 
     public function openModal()
     {
         $this->open = true;
+
+        // Если есть linkUrl, пытаемся найти материал и раскрыть категорию
+        if ($this->linkUrl) {
+            $this->findAndSelectMaterialByUrl($this->linkUrl);
+        }
+    }
+
+    public function findAndSelectMaterialByUrl($url)
+    {
+        // Извлекаем slug из URL /materials/slug
+        if (preg_match('/\/materials\/([^\/]+)/', $url, $matches)) {
+            $slug = $matches[1];
+            $material = \App\Models\Material::where('slug', $slug)->first();
+            if ($material) {
+                $this->selectedMaterialId = $material->id;
+                $this->linkText = $material->title;
+
+                // Раскрываем категорию и родительские категории
+                if ($material->category_id) {
+                    $this->expandedCategories[] = $material->category_id;
+                    $category = \App\Models\Category::find($material->category_id);
+                    while ($category && $category->parent_id) {
+                        $category = $category->parent;
+                        if ($category && !in_array($category->id, $this->expandedCategories)) {
+                            $this->expandedCategories[] = $category->id;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function openModalWithSelectedText()
@@ -74,6 +136,7 @@ class LinkModal extends Component
         $this->open = false;
         $this->showFileManagerModal = false;
         $this->reset(['linkUrl', 'linkText', 'linkTarget', 'linkTitle', 'searchTerm']);
+        $this->loadCategories();
         $this->loadMaterials();
     }
 
@@ -99,9 +162,32 @@ class LinkModal extends Component
     public function onFileSelected($url)
     {
         $this->linkUrl = $url;
-        $this->selectedMaterialId = null; // Сбрасываем выделение материала
+        $this->selectedMaterialId = null;
         $this->closeFileManagerModal();
     }
+
+
+
+    public function expandCategoryForMaterial($materialId)
+    {
+        $material = \App\Models\Material::find($materialId);
+        if ($material && $material->category_id) {
+            // Раскрываем родительские категории
+            $category = $material->category;
+            $this->expandedCategories[] = $category->id;
+
+            while ($category->parent_id) {
+                $category = $category->parent;
+                if (!in_array($category->id, $this->expandedCategories)) {
+                    $this->expandedCategories[] = $category->id;
+                }
+            }
+        }
+    }
+
+
+
+
 
     public function render()
     {
