@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\MenuCategories\MenuCategoryResource;
+use App\Filament\Resources\Menus\MenuResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -37,6 +39,14 @@ class AdminPanelProvider extends PanelProvider
                     ->url('/admin/file-manager')
                     ->icon('heroicon-o-folder')
                     ->group('Медиа'),
+                NavigationItem::make('Меню')
+                    ->url(fn(): string => MenuResource::getUrl())
+                    ->icon('heroicon-o-bars-3')
+                    ->group('Контент'),
+                NavigationItem::make('Категории меню')
+                    ->url(fn(): string => MenuCategoryResource::getUrl())
+                    ->icon('heroicon-o-tag')
+                    ->group('Контент'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

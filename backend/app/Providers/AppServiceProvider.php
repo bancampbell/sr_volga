@@ -5,10 +5,14 @@ namespace App\Providers;
 use App\Contracts\CategoryRepositoryInterface;
 use App\Contracts\FileSystemInterface;
 use App\Contracts\MaterialRepositoryInterface;
+use App\Contracts\MenuRepositoryInterface;
 use App\Livewire\FileManager;
 use App\Repositories\CategoryRepository;
 use App\Repositories\MaterialRepository;
+use App\Repositories\MenuRepository;
 use App\Services\FileSystemService;
+use App\View\Components\MenuComponent;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use App\Livewire\LinkModal;
@@ -23,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FileSystemInterface::class, FileSystemService::class);
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
         $this->app->bind(MaterialRepositoryInterface::class, MaterialRepository::class);
+        $this->app->bind(MenuRepositoryInterface::class, MenuRepository::class);
+
     }
 
     /**
@@ -32,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Livewire::component('link-modal', LinkModal::class);
         Livewire::component('file-manager', FileManager::class);
+        Blade::component('menu', MenuComponent::class);
 
     }
 }
