@@ -22,6 +22,8 @@ class MenuCategoryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'MenuCategory';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Schema $schema): Schema
     {
         return MenuCategoryForm::configure($schema);
