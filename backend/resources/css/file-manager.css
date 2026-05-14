@@ -1,0 +1,906 @@
+/* file-manager.css - стили только для файлового менеджера */
+
+/* Модальное окно ссылок */
+.link-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.link-modal-container {
+    background: white;
+    border-radius: 0.5rem;
+    width: 700px;
+    max-width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.link-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.link-modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.link-modal-close {
+    color: #9ca3af;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.link-modal-tabs {
+    padding: 0 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+    display: flex;
+    gap: 1rem;
+}
+
+.link-modal-tab {
+    padding: 0.75rem 0;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #4b5563;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.link-modal-tab.active {
+    color: #4f46e5;
+    border-bottom-color: #4f46e5;
+}
+
+.link-modal-body {
+    padding: 1.5rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.link-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+/* Формы */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-input {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.form-input:focus {
+    outline: none;
+    ring: 2px solid #3b82f6;
+}
+
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    padding: 0.5rem 0.75rem;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    cursor: pointer;
+}
+
+/* Поиск и дерево */
+.search-section {
+    margin-bottom: 1.25rem;
+}
+
+.search-box {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.search-input {
+    flex: 1;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.search-button {
+    padding: 0.5rem 1rem;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.category-tree-container {
+    height: 200px;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    overflow-y: auto;
+}
+
+.empty-message {
+    padding: 0.5rem 0.75rem;
+    color: #9ca3af;
+}
+
+/* Кнопки */
+.btn-cancel {
+    padding: 0.5rem 1rem;
+    background: #e5e7eb;
+    border-radius: 0.375rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    padding: 0.5rem 1rem;
+    background: #4f46e5;
+    color: white;
+    border-radius: 0.375rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #4338ca;
+}
+
+/* Модалка файлового менеджера */
+.fm-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fm-modal-container {
+    background: white;
+    border-radius: 0.5rem;
+    width: 1000px;
+    max-width: 90%;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.fm-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.fm-modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.fm-modal-close {
+    color: #9ca3af;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.fm-modal-content {
+    flex: 1;
+    overflow: auto;
+    padding: 1rem;
+}
+
+/* Категории и материалы */
+.category-item {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.category-item:hover {
+    background-color: #f3f4f6;
+}
+
+.category-expand {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #374151;
+}
+
+.material-item {
+    padding: 0.5rem 0.75rem 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.material-item:hover {
+    background-color: #f3f4f6;
+}
+
+.material-item.selected {
+    font-weight: 900;
+    background-color: #e0f2fe;
+}
+
+/* Select */
+.form-select {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+/* Дополнительные стили для category-tree */
+.font-medium {
+    font-weight: 500;
+}
+
+.category-children {
+    margin-left: 1.5rem;
+}
+
+/* Стили для folder-tree */
+.folder-tree-item {
+    margin-left: 0;
+}
+
+.folder-tree-folder-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.125rem;
+}
+
+.folder-toggle {
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 200;
+    width: 1.25rem;
+    height: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    background-color: white;
+    color: #4b5563;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.folder-toggle:hover {
+    background-color: #f3f4f6;
+    border-color: #1f2937;
+    color: #1f2937;
+}
+
+.folder-tree-folder {
+    flex: 1;
+    font-size: 0.875rem;
+    color: #374151;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.folder-tree-folder:hover {
+    background-color: #f3f4f6;
+}
+
+.folder-tree-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.folder-svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: #d6be94;
+    stroke: #7a6a4b;
+}
+.folder-toggle-empty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.8rem;
+    opacity: 0.4;
+}
+
+.folder-tree-children {
+    margin-left: 1.75rem;  /* Отступ для вложенных папок с учётом плюса */
+}
+
+/* x-cloak для предотвращения мерцания */
+[x-cloak] {
+    display: none !important;
+}
+
+
+/* ============================================
+   File Manager Styles
+   ============================================ */
+
+/* Основной контейнер */
+.file-manager-container {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+/* Верхняя панель */
+.fm-header {
+    background: white;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.fm-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fm-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fm-breadcrumb-text {
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+.fm-breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.fm-breadcrumb-back {
+    font-size: 0.875rem;
+    color: #2563eb;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.fm-breadcrumb-back:hover {
+    text-decoration: underline;
+}
+
+.fm-breadcrumb-sep {
+    color: #9ca3af;
+}
+
+.fm-breadcrumb-path {
+    font-size: 0.875rem;
+    font-family: monospace;
+    color: #374151;
+}
+
+.fm-home-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.fm-home-icon:hover {
+    background-color: #f3f4f6;
+}
+
+.fm-home-svg {
+    width: 1rem;
+    height: 1rem;
+    color: #4b5563;
+}
+
+/* Кнопки действий */
+.fm-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.fm-btn-upload, .fm-btn-help {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.fm-btn-upload:hover, .fm-btn-help:hover {
+    background-color: #e5e7eb;
+}
+.fm-btn-delete {
+    flex: 1;
+    padding: 0.5rem;
+    text-align: center;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.fm-btn-delete:hover {
+    background-color: #dc2626;
+}
+
+/* Основная сетка (3 колонки) */
+.fm-main-layout {
+    display: flex;
+    min-height: 400px;
+}
+
+/* Левая панель - папки */
+.fm-sidebar {
+    width: 18rem;
+    border-right: 1px solid #e5e7eb;
+}
+
+.fm-sidebar-header {
+    background-color: #f3f4f6;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.fm-sidebar-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* Новая папка */
+.fm-new-folder {
+    padding: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.fm-new-folder-form {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.fm-new-folder-input {
+    flex: 1;
+    font-size: 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    outline: none;
+}
+
+.fm-new-folder-input:focus {
+    ring: 1px solid #3b82f6;
+}
+
+.fm-new-folder-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.fm-new-folder-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.fm-error {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.fm-folder-tree {
+    padding: 0.5rem;
+    background: white;
+}
+
+/* Центральная область - список файлов */
+.fm-content {
+    flex: 1;
+    border-right: 1px solid #e5e7eb;
+}
+
+.fm-content-header {
+    background-color: #f3f4f6;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.fm-content-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.fm-file-list {
+    padding: 0.5rem;
+    background: white;
+}
+
+.fm-file-list-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* Элемент файла */
+.fm-file-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fm-file-item-unselected {
+    color: #374151;
+}
+
+.fm-file-item-unselected:hover {
+    background-color: #f3f4f6;
+}
+
+.fm-file-item-selected {
+    font-weight: 900 !important;
+    color: #111827;
+    background-color: #e0f2fe;
+}
+
+/* Чекбокс (стилизация) */
+.fm-checkbox {
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #4b5563;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fm-checkbox-mark {
+    font-size: 0.875rem;
+    color: #1f2937;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.fm-file-name {
+    flex: 1;
+    cursor: inherit;
+}
+
+.fm-empty {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Правая панель - информация */
+.fm-info {
+    width: 16rem;
+}
+
+.fm-info-header {
+    background-color: #f3f4f6;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.fm-info-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.fm-info-content {
+    padding: 0.75rem;
+    background: white;
+}
+
+.fm-info-preview {
+    text-align: center;
+}
+
+.fm-info-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+    word-break: break-all;
+}
+
+.fm-info-type {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.fm-info-details {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.fm-info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+}
+
+.fm-info-label {
+    color: #6b7280;
+}
+
+.fm-info-empty {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.fm-info-actions {
+    border-top: 1px solid #e5e7eb;
+    padding: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.fm-btn-insert {
+    flex: 1;
+    padding: 0.5rem;
+    text-align: center;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.fm-btn-insert:hover {
+    background-color: #1d4ed8;
+}
+
+.fm-btn-cancel {
+    flex: 1;
+    padding: 0.5rem;
+    text-align: center;
+    background-color: #e5e7eb;
+    color: #374151;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.fm-btn-cancel:hover {
+    background-color: #d1d5db;
+}
+
+/* Модальное окно загрузки */
+.upload-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.upload-modal-container {
+    width: 900px;
+    height: 600px;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.upload-modal-header {
+    height: 40px;
+    background: #9ca3af;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.upload-modal-title {
+    font-weight: 700;
+    color: #374151;
+    font-size: 14px;
+}
+
+/* Dropzone */
+.upload-dropzone {
+    margin: 30px;
+    flex: 1;
+    background: #f3f4f6;
+    border: 2px dashed #d1d5db;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.upload-dropzone.dragover {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.upload-dropzone-text {
+    font-weight: 700;
+    color: #4b5563;
+    font-size: 16px;
+}
+
+/* Список файлов для загрузки */
+.upload-file-list {
+    margin: 0 30px 20px 30px;
+    padding: 10px;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.upload-file-list-header {
+    font-size: 12px;
+    color: #4b5563;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.upload-file-item {
+    font-size: 11px;
+    color: #6b7280;
+    padding: 2px 0;
+}
+
+/* Футер модалки */
+.upload-modal-footer {
+    height: 60px;
+    background: #f3f4f6;
+    border-radius: 0 0 8px 8px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+}
+
+.upload-btn-browse {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.upload-btn-browse:hover {
+    background: #059669;
+}
+
+.upload-btn-submit {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.upload-btn-submit:hover {
+    background: #2563eb;
+}
+
+.upload-btn-close {
+    background: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.upload-btn-close:hover {
+    background: #f3f4f6;
+}
+
+/* x-cloak для Alpine */
+[x-cloak] {
+    display: none !important;
+}
+/* Скрываем стандартный текст браузера */
+input[type="file"] {
+    color: transparent;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* Скрываем лишние тексты в футере */
+.upload-modal-footer > span,
+.upload-modal-footer .fi-fo-file-upload__hint,
+.upload-modal-footer .fi-fo-file-upload__label {
+    display: none;
+}

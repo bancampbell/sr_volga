@@ -1,70 +1,59 @@
-<div x-data="{ }">
+@push('styles')
+    <link href="{{ Vite::asset('resources/css/file-manager.css') }}" rel="stylesheet">
+@endpush
+
+<div>
     <button type="button" wire:click="openModalWithSelectedText" class="px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
         🔗 Добавить ссылку
     </button>
 
     @if($open)
-        <div style="position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;">
-            <div style="background: white; border-radius: 0.5rem; width: 700px; max-width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #e5e7eb;">
-                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937;">Ссылка</h3>
-                    <button type="button" wire:click="closeModal" style="color: #9ca3af; font-size: 1.5rem; background: none; border: none; cursor: pointer;">&times;</button>
+        <div class="link-modal-overlay">
+            <div class="link-modal-container">
+                <div class="link-modal-header">
+                    <h3>Ссылка</h3>
+                    <button type="button" wire:click="closeModal" class="link-modal-close">×</button>
                 </div>
 
-                <div style="padding: 0 1rem; border-bottom: 1px solid #e5e7eb; background: #f9fafb;">
-                    <div style="display: flex; gap: 1rem;">
-                        <button type="button" wire:click="$set('activeTab', 'link')" style="padding: 0.75rem 0; border-bottom: 2px solid {{ $activeTab === 'link' ? '#4f46e5' : 'transparent' }}; color: {{ $activeTab === 'link' ? '#4f46e5' : '#4b5563' }}; font-weight: 500; background: none; cursor: pointer;">Ссылка</button>
-                        <button type="button" wire:click="$set('activeTab', 'advanced')" style="padding: 0.75rem 0; border-bottom: 2px solid {{ $activeTab === 'advanced' ? '#4f46e5' : 'transparent' }}; color: {{ $activeTab === 'advanced' ? '#4f46e5' : '#4b5563' }}; font-weight: 500; background: none; cursor: pointer;">Расширенные</button>
-                        <button type="button" wire:click="$set('activeTab', 'popup')" style="padding: 0.75rem 0; border-bottom: 2px solid {{ $activeTab === 'popup' ? '#4f46e5' : 'transparent' }}; color: {{ $activeTab === 'popup' ? '#4f46e5' : '#4b5563' }}; font-weight: 500; background: none; cursor: pointer;">Всплывающие окна</button>
-                    </div>
+                <div class="link-modal-tabs">
+                    <button type="button" wire:click="$set('activeTab', 'link')" class="link-modal-tab {{ $activeTab === 'link' ? 'active' : '' }}">Ссылка</button>
+                    <button type="button" wire:click="$set('activeTab', 'advanced')" class="link-modal-tab {{ $activeTab === 'advanced' ? 'active' : '' }}">Расширенные</button>
+                    <button type="button" wire:click="$set('activeTab', 'popup')" class="link-modal-tab {{ $activeTab === 'popup' ? 'active' : '' }}">Всплывающие окна</button>
                 </div>
 
-                <div style="padding: 1.5rem;">
+                <div class="link-modal-body">
                     @if($activeTab === 'link')
                         <div>
-                            <div style="margin-bottom: 1.25rem;">
-                                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Адрес</label>
-                                <div style="display: flex; gap: 0.5rem;">
-                                    <input type="text" wire:model="linkUrl" style="flex: 1; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
-                                    <button type="button" wire:click="openFileManager" style="padding: 0.5rem 0.75rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.375rem; cursor: pointer; display: inline-flex; align-items: center;">
-                                        📄
-                                    </button>
+                            <div class="form-group">
+                                <label class="form-label">Адрес</label>
+                                <div class="input-group">
+                                    <input type="text" wire:model="linkUrl" class="form-input">
+                                    <button type="button" wire:click="openFileManager" class="btn-icon">📄</button>
                                 </div>
                             </div>
-                            <div style="margin-bottom: 1.25rem;">
-                                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Текст ссылки</label>
-                                <input type="text" wire:model="linkText" style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+
+                            <div class="form-group">
+                                <label class="form-label">Текст ссылки</label>
+                                <input type="text" wire:model="linkText" class="form-input">
                             </div>
 
-                            <!-- Поиск и дерево категорий/материалов -->
-                            <div style="margin-bottom: 1.25rem;">
-                                <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                    <input type="text"
-                                           wire:model.live="searchTerm"
-                                           placeholder="Поиск..."
-                                           style="flex: 1; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
-                                    <button type="button"
-                                            wire:click="loadMaterials"
-                                            style="padding: 0.5rem 1rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer;">
-                                        🔍 Поиск
-                                    </button>
+                            <div class="search-section">
+                                <div class="search-box">
+                                    <input type="text" wire:model.live="searchTerm" placeholder="Поиск..." class="search-input">
+                                    <button type="button" wire:click="loadMaterials" class="search-button">🔍 Поиск</button>
                                 </div>
 
-                                <div style="height: 200px; border: 1px solid #e5e7eb; border-radius: 0.375rem; overflow-y: auto;">
+                                <div class="category-tree-container">
                                     @if($searchTerm)
-                                        <!-- Режим поиска: показываем найденные материалы -->
                                         @forelse($materials as $material)
                                             <div wire:click="selectMaterial('{{ $material->slug }}')"
-                                                 style="padding: 0.5rem 0.75rem; cursor: pointer; {{ ($selectedMaterialId ?? null) === $material->id ? 'font-weight: 900; background-color: #e0f2fe;' : '' }}">
+                                                 class="material-item {{ ($selectedMaterialId ?? null) === $material->id ? 'selected' : '' }}">
                                                 {{ $material->title }}
                                             </div>
                                         @empty
-                                            <div style="padding: 0.5rem 0.75rem; color: #9ca3af;">
-                                                Материалы не найдены
-                                            </div>
+                                            <div class="empty-message">Материалы не найдены</div>
                                         @endforelse
                                     @else
-                                        <!-- Дерево категорий -->
                                         @foreach($categories as $category)
                                             @include('livewire.category-tree', ['category' => $category, 'selectedMaterialId' => $selectedMaterialId])
                                         @endforeach
@@ -72,37 +61,34 @@
                                 </div>
                             </div>
 
-                            <div style="margin-bottom: 1.25rem;">
-                                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Якоря статьи</label>
-                                <select style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
-                                    <option>-- Выбрать --</option>
-                                </select>
-                            </div>
-                            <div style="margin-bottom: 1.25rem;">
-                                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Цель</label>
-                                <select wire:model="linkTarget" style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+                            <div class="form-group">
+                                <label class="form-label">Цель</label>
+                                <select wire:model="linkTarget" class="form-select">
                                     <option value="">-- Не выбрано --</option>
                                     <option value="_blank">_blank</option>
                                     <option value="_self">_self</option>
                                 </select>
                             </div>
-                            <div style="margin-bottom: 1.25rem;">
-                                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem;">Название</label>
-                                <input type="text" wire:model="linkTitle" style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem;">
+
+                            <div class="form-group">
+                                <label class="form-label">Название</label>
+                                <input type="text" wire:model="linkTitle" class="form-input">
                             </div>
                         </div>
                     @endif
+
                     @if($activeTab === 'advanced')
                         <div style="text-align: center; padding: 2rem; color: #6b7280;">Расширенные настройки (будет позже)</div>
                     @endif
+
                     @if($activeTab === 'popup')
                         <div style="text-align: center; padding: 2rem; color: #6b7280;">Настройка всплывающих окон (будет позже)</div>
                     @endif
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 0.5rem; padding: 1rem; border-top: 1px solid #e5e7eb; background: #f9fafb;">
-                    <button type="button" wire:click="closeModal" style="padding: 0.5rem 1rem; background: #e5e7eb; border-radius: 0.375rem; border: none; cursor: pointer;">Отмена</button>
-                    <button type="button" wire:click="insertLink" style="padding: 0.5rem 1rem; background: #4f46e5; color: white; border-radius: 0.375rem; border: none; cursor: pointer;">Вставить ссылку</button>
+                <div class="link-modal-footer">
+                    <button type="button" wire:click="closeModal" class="btn-cancel">Отмена</button>
+                    <button type="button" wire:click="insertLink" class="btn-primary">Вставить ссылку</button>
                 </div>
             </div>
         </div>
@@ -110,14 +96,13 @@
 
     <!-- Модальное окно файлового менеджера -->
     @if($showFileManagerModal)
-        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
-        <div style="position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;">
-            <div style="background: white; border-radius: 0.5rem; width: 1000px; max-width: 90%; height: 80vh; display: flex; flex-direction: column;">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #e5e7eb;">
-                    <h3 style="font-size: 1.25rem; font-weight: 600;">Файловый менеджер</h3>
-                    <button type="button" wire:click="closeFileManagerModal" style="color: #9ca3af; font-size: 1.5rem; background: none; border: none; cursor: pointer;">&times;</button>
+        <div class="fm-modal-overlay">
+            <div class="fm-modal-container">
+                <div class="fm-modal-header">
+                    <h3>Файловый менеджер</h3>
+                    <button type="button" wire:click="closeFileManagerModal" class="fm-modal-close">×</button>
                 </div>
-                <div style="flex: 1; overflow: auto; padding: 1rem;">
+                <div class="fm-modal-content">
                     @livewire('file-manager', ['key' => time()])
                 </div>
             </div>

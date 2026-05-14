@@ -1,38 +1,27 @@
 import Alpine from 'alpinejs';
-import 'tailwindcss';
+
+window.Alpine = Alpine;
+Alpine.start();
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('linkModalComponent', () => ({
+    Alpine.data('linkModal', () => ({
         open: false,
         linkUrl: '',
         linkText: '',
         linkTarget: '',
         activeTab: 'link',
 
+        init() {
+            console.log('Alpine компонент загружен');
+        },
+
         insertLink() {
-            let editor = tinymce.activeEditor;
-            if (editor) {
-                let selectedText = editor.selection.getContent({format: 'text'});
-                let linkTextValue = this.linkText || selectedText || this.linkUrl;
-                let linkHtml = `<a href="${this.linkUrl}" target="${this.linkTarget}">${linkTextValue}</a>`;
-                editor.insertContent(linkHtml);
-            }
+            console.log('insertLink вызван', this.linkUrl);
+            this.open = false;
+        },
+
+        close() {
             this.open = false;
         }
     }));
-});
-
-window.Alpine = Alpine;
-Alpine.start();
-
-// Принудительная инициализация после Livewire
-document.addEventListener('livewire:navigated', () => {
-    if (typeof Alpine !== 'undefined') {
-        setTimeout(() => {
-            const el = document.querySelector('[x-data="linkModalComponent()"]');
-            if (el && !el._x_dataStack) {
-                Alpine.initTree(el);
-            }
-        }, 100);
-    }
 });

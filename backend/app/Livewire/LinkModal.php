@@ -19,7 +19,13 @@ class LinkModal extends Component
     public $categories = [];
     public $expandedCategories = []; // массив раскрытых категорий
 
-    protected $listeners = ['file-selected' => 'onFileSelected'];
+    protected $listeners = [
+        'file-selected' => 'onFileSelected',
+        'set-link-text' => 'setLinkText',
+        'set-link-url' => 'setLinkUrl',
+        'update-link-text' => 'updateLinkText',
+        'update-link-url' => 'updateLinkUrl',
+    ];
 
     public $selectedMaterialId = null;
 
@@ -129,13 +135,14 @@ class LinkModal extends Component
     public function openModalWithSelectedText()
     {
         $this->dispatch('get-selected-text');
+        $this->openModal();
     }
 
     public function closeModal()
     {
         $this->open = false;
         $this->showFileManagerModal = false;
-        $this->reset(['linkUrl', 'linkText', 'linkTarget', 'linkTitle', 'searchTerm']);
+        $this->reset(['linkUrl', 'linkText', 'linkTarget', 'linkTitle', 'searchTerm', 'selectedMaterialId']);
         $this->loadCategories();
         $this->loadMaterials();
     }
@@ -166,8 +173,6 @@ class LinkModal extends Component
         $this->closeFileManagerModal();
     }
 
-
-
     public function expandCategoryForMaterial($materialId)
     {
         $material = \App\Models\Material::find($materialId);
@@ -185,9 +190,26 @@ class LinkModal extends Component
         }
     }
 
+    // НОВЫЕ МЕТОДЫ ДЛЯ ИНТЕГРАЦИИ С TipTap
+    public function setLinkText($text)
+    {
+        $this->linkText = $text;
+    }
 
+    public function setLinkUrl($url)
+    {
+        $this->linkUrl = $url;
+    }
 
+    public function updateLinkText($text)
+    {
+        $this->linkText = $text;
+    }
 
+    public function updateLinkUrl($url)
+    {
+        $this->linkUrl = $url;
+    }
 
     public function render()
     {

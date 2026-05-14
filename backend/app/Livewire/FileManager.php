@@ -319,6 +319,28 @@ class FileManager extends Component
         }
     }
 
+
+    public function deleteSelectedFile()
+    {
+        if (!$this->selectedFile) {
+            return;
+        }
+
+        $disk = Storage::disk('public');
+        $path = $this->selectedFile['path'];
+
+        if ($disk->exists($path)) {
+            $disk->delete($path);
+        }
+
+        $this->selectedFile = null;
+        $this->loadFiles();
+
+        // Опционально: уведомление об успехе
+        session()->flash('message', 'Файл удалён');
+    }
+
+
     public function render()
     {
         return view('livewire.file-manager');
