@@ -54,6 +54,9 @@ class Menu extends Model
 
     public function getUrlAttribute(): string
     {
+        if ($this->type === 'divider') {
+            return '#';
+        }
         return $this->attributes['url'] ?? '';
     }
 

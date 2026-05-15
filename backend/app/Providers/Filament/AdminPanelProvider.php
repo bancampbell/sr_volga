@@ -35,10 +35,6 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->navigationItems([
-                NavigationItem::make('Файлы')
-                    ->url('/admin/file-manager')
-                    ->icon('heroicon-o-folder')
-                    ->group('Медиа'),
                 NavigationItem::make('Меню')
                     ->url(fn(): string => MenuResource::getUrl())
                     ->icon('heroicon-o-bars-3')
@@ -47,6 +43,10 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn(): string => MenuCategoryResource::getUrl())
                     ->icon('heroicon-o-tag')
                     ->group('Контент'),
+                NavigationItem::make('Файлы')
+                    ->url('/admin/file-manager')
+                    ->icon('heroicon-o-folder')
+                    ->group('Медиа'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

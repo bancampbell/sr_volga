@@ -38,7 +38,11 @@ class MenuForm
                                 TextInput::make('name')
                                     ->label('Название')
                                     ->required()
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        $set('handle', \Illuminate\Support\Str::slug($state));
+                                    }),
 
                                 TextInput::make('handle')
                                     ->label('Идентификатор меню')
@@ -53,6 +57,7 @@ class MenuForm
                                     ->label('Что будет открывать пункт меню?')
                                     ->options([
                                         'link' => 'Обычная ссылка (URL)',
+                                        'divider' => 'Заглушка (разделитель)',
                                         'material' => 'Материал',
                                         'category' => 'Категория',
                                     ])

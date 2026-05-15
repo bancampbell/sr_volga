@@ -10,11 +10,13 @@ enum MenuType: string
     case MATERIAL = 'material';
     case CUSTOM = 'custom';
     case EXTERNAL = 'external';
+    case DIVIDER = 'divider';
 
     public function label(): string
     {
         return match($this) {
             self::LINK => 'Обычная ссылка',
+            self::DIVIDER => 'Заглушка (разделитель)',
             self::PAGE => 'Страница',
             self::CATEGORY => 'Категория',
             self::MATERIAL => 'Материал',
