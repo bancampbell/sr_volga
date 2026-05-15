@@ -13,5 +13,12 @@ class Material extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    public function getUrl(): string
+    {
+        return url('/materials/' . $this->slug);
+    }
+
+
+
 
 }

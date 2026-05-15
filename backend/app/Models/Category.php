@@ -26,4 +26,9 @@ class Category extends Model
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
+
+    public function getUrl(): string
+    {
+        return url('/categories/' . $this->slug);
+    }
 }

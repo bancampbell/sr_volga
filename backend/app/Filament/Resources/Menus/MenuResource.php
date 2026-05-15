@@ -7,6 +7,8 @@ use App\Filament\Resources\Menus\Pages\EditMenu;
 use App\Filament\Resources\Menus\Pages\ListMenus;
 use App\Filament\Resources\Menus\Schemas\MenuForm;
 use App\Filament\Resources\Menus\Tables\MenusTable;
+use App\Models\Category;
+use App\Models\Material;
 use App\Models\Menu;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -37,9 +39,7 @@ class MenuResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -54,8 +54,41 @@ class MenuResource extends Resource
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {
         return parent::getRecordRouteBindingEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+            ->withoutGlobalScopes([SoftDeletingScope::class]);
+    }
+
+    public static function mutateFormDataBeforeCreate(array $data): array
+    {
+        return self::mutateFormData($data);
+    }
+
+    public static function mutateFormDataBeforeSave(array $data): array
+    {
+        return self::mutateFormData($data);
+    }
+
+    private static function mutateFormData(array $data): array
+    {
+        if (isset($data['material_id']) && $data['material_id']) {
+            $data['linkable_id'] = $data['material_id'];
+            $data['linkable_type'] = Material::class;
+            $data['url'] = Material::find($data['material_id'])?->getUrl();
+            unset($data['material_id'], $data['category_id']);
+        }
+
+        if (isset($data['category_id']) && $data['category_id']) {
+            $data['linkable_id'] = $data['category_id'];
+            $data['linkable_type'] = Category::class;
+            $data['url'] = Category::find($data['category_id'])?->getUrl();
+            unset($data['category_id'], $data['material_id']);
+        }
+
+        if (isset($data['url']) && !empty($data['url'])) {
+            $data['linkable_id'] = null;
+            $data['linkable_type'] = null;
+            unset($data['material_id'], $data['category_id']);
+        }
+
+        return $data;
     }
 }

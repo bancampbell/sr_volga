@@ -8,8 +8,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
-use App\Enums\MenuType;
 use App\Enums\MenuTarget;
+use App\Models\Material;
+use App\Models\Category;
 
 class MenuForm
 {
@@ -40,31 +41,50 @@ class MenuForm
                                     ->maxLength(255),
 
                                 TextInput::make('handle')
-                                    ->label('Идентификатор меню (main, footer, sidebar)')
+                                    ->label('Идентификатор меню')
                                     ->required()
                                     ->maxLength(255)
                                     ->unique(ignoreRecord: true),
-
-                                Select::make('type')
-                                    ->label('Тип ссылки')
-                                    ->options(MenuType::class)
-                                    ->required()
-                                    ->reactive()
-                                    ->afterStateUpdated(fn ($set) => $set('url', null)),
                             ]),
 
-                        Tab::make('Ссылка')
+                        Tab::make('Тип ссылки')
                             ->schema([
-                                TextInput::make('url')
-                                    ->label('URL')
-                                    ->visible(fn ($get) => $get('type') instanceof MenuType && $get('type')->requiresUrl())
-                                    ->maxLength(255),
+                                Select::make('type')
+                                    ->label('Что будет открывать пункт меню?')
+                                    ->options([
+                                        'link' => 'Обычная ссылка (URL)',
+                                        'material' => 'Материал',
+                                        'category' => 'Категория',
+                                    ])
+                                    ->required()
+                                    ->live(),
 
-                                TextInput::make('external_url')
-                                    ->label('Внешний URL')
-                                    ->visible(fn ($get) => $get('type') === MenuType::EXTERNAL)
-                                    ->url()
-                                    ->maxLength(255),
+                                TextInput::make('url')
+                                    ->label('URL адрес')
+                                    ->maxLength(255)
+                                    ->dehydrated(true),
+
+                                Select::make('material_id')
+                                    ->label('Выберите материал')
+                                    ->options(Material::pluck('title', 'id'))
+                                    ->visible(fn ($get) => $get('type') === 'material')
+                                    ->searchable()
+                                    ->preload()
+                                    ->live()
+                                    ->afterStateUpdated(fn ($state, callable $set) =>
+                                    $set('url', Material::find($state)?->getUrl())
+                                    ),
+
+                                Select::make('category_id')
+                                    ->label('Выберите категорию')
+                                    ->options(Category::pluck('name', 'id'))
+                                    ->visible(fn ($get) => $get('type') === 'category')
+                                    ->searchable()
+                                    ->preload()
+                                    ->live()
+                                    ->afterStateUpdated(fn ($state, callable $set) =>
+                                    $set('url', Category::find($state)?->getUrl())
+                                    ),
 
                                 Select::make('target')
                                     ->label('Открывать в')

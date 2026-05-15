@@ -21,6 +21,7 @@ class MenusTable
             ->columns([
                 TextColumn::make('name')
                     ->label('Название')
+                    ->formatStateUsing(fn ($state, $record) => str_repeat('— ', $record->depth ?? 0) . $state)
                     ->searchable()
                     ->sortable(),
 
@@ -32,6 +33,12 @@ class MenusTable
                 TextColumn::make('parent.name')
                     ->label('Родитель')
                     ->sortable(),
+
+                TextColumn::make('url')
+                    ->label('URL')
+                    ->limit(50)
+                    ->searchable()
+                    ->toggleable(),
 
                 IconColumn::make('is_active')
                     ->label('Активно')

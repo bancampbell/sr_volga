@@ -31,6 +31,8 @@ class Menu extends Model
         'sort',
         'linkable_type',
         'linkable_id',
+        'material_id',
+        'category_id',
         'roles',
     ];
 
@@ -40,7 +42,10 @@ class Menu extends Model
         'is_active' => 'boolean',
         'is_new_tab' => 'boolean',
         'sort' => 'integer',
+        'url' => 'string',
     ];
+
+    protected $appends = ['depth', 'material_id', 'category_id'];
 
     public function linkable()
     {
@@ -49,19 +54,7 @@ class Menu extends Model
 
     public function getUrlAttribute(): string
     {
-        if ($this->external_url) {
-            return $this->external_url;
-        }
-
-        if ($this->route_name) {
-            return route($this->route_name, $this->route_params ?? []);
-        }
-
-        if ($this->linkable) {
-            return $this->linkable->getUrl();
-        }
-
-        return $this->url ?? '#';
+        return $this->attributes['url'] ?? '';
     }
 
     public function category()
@@ -69,4 +62,53 @@ class Menu extends Model
         return $this->belongsTo(MenuCategory::class, 'menu_category_id');
     }
 
+    public function getDepthAttribute(): int
+    {
+        return $this->ancestors()->count();
+    }
+
+    public function setMaterialIdAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['material_id'] = $value;
+            $this->attributes['linkable_id'] = $value;
+            $this->attributes['linkable_type'] = Material::class;
+            $this->attributes['url'] = Material::find($value)?->getUrl();
+        }
+    }
+
+    public function setCategoryIdAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['category_id'] = $value;
+            $this->attributes['linkable_id'] = $value;
+            $this->attributes['linkable_type'] = Category::class;
+            $this->attributes['url'] = Category::find($value)?->getUrl();
+        }
+    }
+
+    public function setLinkableIdAttribute($value)
+    {
+        $this->attributes['linkable_id'] = $value;
+
+        if ($value && $this->linkable_type === Material::class) {
+            $this->attributes['url'] = Material::find($value)?->getUrl();
+            $this->attributes['material_id'] = $value;
+        }
+
+        if ($value && $this->linkable_type === Category::class) {
+            $this->attributes['url'] = Category::find($value)?->getUrl();
+            $this->attributes['category_id'] = $value;
+        }
+    }
+
+    public function getMaterialIdAttribute()
+    {
+        return $this->linkable_type === Material::class ? $this->linkable_id : null;
+    }
+
+    public function getCategoryIdAttribute()
+    {
+        return $this->linkable_type === Category::class ? $this->linkable_id : null;
+    }
 }
