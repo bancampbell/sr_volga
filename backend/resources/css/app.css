@@ -1,51 +1,97 @@
-@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+@layer base {
+    body {
+        font-family: 'Inter', sans-serif;
+    }
 }
 
-
-
-/* Базовые стили для меню */
+/* ============================================
+   Меню
+   ============================================ */
 .menu {
+    display: flex;
+    gap: 24px;
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    gap: 1.5rem;
 }
 
-.menu-submenu {
+.menu li {
+    position: relative;
     list-style: none;
-    margin: 0;
-    padding: 0.5rem 0;
-    position: absolute;
-    background: white;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    border-radius: 0.5rem;
-    min-width: 200px;
-    display: none;
 }
 
-.menu-item:hover > .menu-submenu {
-    display: block;
-}
-
-.menu-submenu-item {
-    padding: 0.5rem 1rem;
-}
-
-.menu-submenu-item a {
+.menu a {
     text-decoration: none;
     color: #374151;
+    font-weight: 500;
+    padding: 8px 0;
+    display: block;
+    white-space: nowrap;
 }
 
-.menu-submenu-item a:hover {
-    color: #3b82f6;
+.menu a:hover {
+    color: #2563eb;
+}
+
+/* Подменю */
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    min-width: 200px;
+    padding: 8px 0;
+    display: none;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.menu li:hover > .submenu {
+    display: flex;
+}
+
+.submenu li {
+    list-style: none;
+}
+
+.submenu a {
+    padding: 8px 16px;
+    white-space: nowrap;
+}
+
+.submenu a:hover {
+    background-color: #f3f4f6;
+}
+
+.submenu .submenu {
+    top: 0;
+    left: 100%;
+    margin-left: 4px;
+}
+
+/* Мобильная версия */
+@media (max-width: 1023px) {
+    .menu {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .submenu {
+        position: static;
+        box-shadow: none;
+        padding-left: 20px;
+        display: none;
+    }
+
+    .menu li:hover > .submenu {
+        display: flex;
+    }
 }
