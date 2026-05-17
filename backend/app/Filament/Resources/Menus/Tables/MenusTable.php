@@ -22,8 +22,12 @@ class MenusTable
                 TextColumn::make('name')
                     ->label('Название')
                     ->formatStateUsing(fn ($state, $record) => str_repeat('— ', $record->depth ?? 0) . $state)
+                    ->weight(fn ($record) => $record->depth === 0 ? 'bold' : 'normal')
+                    ->color(fn ($record) => $record->depth === 0 ? 'primary' : 'gray')
                     ->searchable()
                     ->sortable(),
+
+// Убери defaultSort('sort') и добавь:
 
                 TextColumn::make('type')
                     ->label('Тип')
@@ -55,7 +59,7 @@ class MenusTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('sort')
+            ->defaultSort('_lft')
             ->reorderable('sort')
             ->groups([
                 \Filament\Tables\Grouping\Group::make('category.name')

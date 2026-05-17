@@ -63,6 +63,9 @@ class MaterialForm
                 Toggle::make('is_active')
                     ->label('Активно')
                     ->default(true),
+                Toggle::make('is_home')
+                    ->label('Сделать главной страницей')
+                    ->default(false),
             ]);
     }
 }

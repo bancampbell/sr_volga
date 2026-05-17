@@ -40,5 +40,6 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('file-manager', FileManager::class);
         Blade::component('menu', MenuComponent::class);
 
+
     }
 }

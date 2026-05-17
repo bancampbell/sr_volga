@@ -9,3 +9,43 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+
+
+/* Базовые стили для меню */
+.menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.menu-submenu {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    position: absolute;
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    min-width: 200px;
+    display: none;
+}
+
+.menu-item:hover > .menu-submenu {
+    display: block;
+}
+
+.menu-submenu-item {
+    padding: 0.5rem 1rem;
+}
+
+.menu-submenu-item a {
+    text-decoration: none;
+    color: #374151;
+}
+
+.menu-submenu-item a:hover {
+    color: #3b82f6;
+}

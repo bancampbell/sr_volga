@@ -46,9 +46,8 @@ class MenuForm
 
                                 TextInput::make('handle')
                                     ->label('Идентификатор меню')
-                                    ->required()
                                     ->maxLength(255)
-                                    ->unique(ignoreRecord: true),
+                                    ->nullable()
                             ]),
 
                         Tab::make('Тип ссылки')

@@ -1,7 +1,7 @@
 @if($items->isNotEmpty())
-    <ul class="menu menu-level-0">
+    <ul class="menu menu-level-{{ $level ?? 0 }}">
         @foreach($items as $item)
-            <li class="menu-item menu-item-level-{{ $item->level }}">
+            <li class="menu-item menu-item-level-{{ $level ?? 0 }}">
                 <a href="{{ $item->url }}"
                    target="{{ $item->target }}"
                    class="menu-link"
@@ -13,17 +13,10 @@
                 </a>
 
                 @if($item->children->isNotEmpty())
-                    <ul class="menu-submenu menu-level-{{ $item->level + 1 }}">
+                    <ul class="menu-submenu">
                         @foreach($item->children as $child)
-                            <li class="menu-item menu-item-level-{{ $child->level }}">
-                                <a href="{{ $child->url }}"
-                                   target="{{ $child->target }}"
-                                   class="menu-link">
-                                    @if($child->icon)
-                                        <i class="menu-icon">{{ $child->icon }}</i>
-                                    @endif
-                                    <span class="menu-title">{{ $child->name }}</span>
-                                </a>
+                            <li class="menu-submenu-item">
+                                <a href="{{ $child->url }}" target="{{ $child->target }}">{{ $child->name }}</a>
                             </li>
                         @endforeach
                     </ul>

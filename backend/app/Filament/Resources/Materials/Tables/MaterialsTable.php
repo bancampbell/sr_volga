@@ -27,6 +27,16 @@ class MaterialsTable
                     ->color('success'),
                 IconColumn::make('is_active')->label('Активно')->boolean(),
                 TextColumn::make('created_at')->label('Создано')->dateTime('d.m.Y H:i')->sortable(),
+
+
+                IconColumn::make('is_home')
+                    ->label('Главная')
+                    ->boolean()
+                    ->trueIcon('heroicon-s-star')  // s — залитая звезда
+                    ->falseIcon('heroicon-o-star') // o — контур
+                    ->trueColor('warning')
+                    ->sortable(),
+
             ])
             ->filters([
                 SelectFilter::make('category_id')

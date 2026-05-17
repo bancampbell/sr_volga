@@ -114,4 +114,13 @@ class Menu extends Model
     {
         return $this->linkable_type === Category::class ? $this->linkable_id : null;
     }
+
+    public static function booted()
+    {
+        static::saving(function ($menu) {
+            if ($menu->parent_id === null && !$menu->handle) {
+                throw new \Exception('Для корневого пункта меню обязательно заполнение идентификатора');
+            }
+        });
+    }
 }

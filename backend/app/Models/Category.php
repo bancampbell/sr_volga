@@ -29,6 +29,26 @@ class Category extends Model
 
     public function getUrl(): string
     {
-        return url('/categories/' . $this->slug);
+        if ($this->parent) {
+            return $this->parent->getUrl() . '/' . $this->slug;
+        }
+        return '/' . $this->slug;
     }
+
+    public function getBreadcrumbs(): array
+    {
+        $crumbs = [];
+        $current = $this;
+
+        while ($current) {
+            array_unshift($crumbs, [
+                'name' => $current->name,
+                'url' => $current->getUrl(),
+            ]);
+            $current = $current->parent;
+        }
+
+        return $crumbs;
+    }
+
 }
